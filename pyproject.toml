@@ -45,6 +45,9 @@ scan2form-gui = "scan2form.ui.app:main"
 scan2form-spike = "scan2form.spike.compare_detectors:main"
 
 [dependency-groups]
+build = [
+    "pyinstaller>=6.11",
+]
 dev = [
     "pytest>=8.3",
     "pytest-qt>=4.5.0",

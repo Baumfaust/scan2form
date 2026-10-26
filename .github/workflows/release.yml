@@ -1,0 +1,42 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: astral-sh/setup-uv@v7
+
+      - name: Install
+        run: uv sync --locked --group build
+
+      - name: Tests
+        run: uv run pytest -q
+        env:
+          QT_QPA_PLATFORM: offscreen
+
+      - name: Build (includes the packaged app's self-test)
+        run: uv run python tools/build_windows.py
+
+      - name: Release notes from CHANGELOG.md
+        shell: bash
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          awk -v h="## [$version]" 'index($0, h) == 1 {on=1; next} /^## / {on=0} on' CHANGELOG.md > notes.md
+          test -s notes.md || { echo "No CHANGELOG.md section for $version"; exit 1; }
+
+      - name: Publish release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" dist/Scan2Form-*-windows-x64.zip dist/Scan2Form-*-windows-x64.zip.sha256 \
+            --title "Scan2Form $GITHUB_REF_NAME" --notes-file notes.md

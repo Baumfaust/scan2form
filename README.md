@@ -20,7 +20,15 @@ own data. 100 % offline: no cloud, no account, no telemetry. Early development, 
 - **Fills out any fillable PDF** — also third-party forms — from an encrypted store of your data,
   and writes a separate filled copy.
 
-## Installation
+## Download (Windows)
+
+Get `Scan2Form-<version>-windows-x64.zip` from the
+[latest release](https://github.com/Baumfaust/scan2form/releases/latest), unzip it anywhere and
+start `Scan2Form.exe`. No installation, no account; the OCR models are included, so it never
+needs an internet connection. The app is not code-signed yet, so Windows may warn about an
+unknown publisher (*More info → Run anyway*). What changed: [CHANGELOG](CHANGELOG.md).
+
+## Run from source
 
 Requires [uv](https://docs.astral.sh/uv/) (it brings Python 3.12 along).
 
@@ -31,9 +39,8 @@ uv sync
 uv run scan2form-gui [form.pdf]
 ```
 
-On the very first OCR run, `rapidocr` downloads its two PP-OCRv5 models (text detection and Latin
-recognition, a few MB) once; after that everything runs offline. A packaged release will include
-them, so it never needs a connection.
+From source, `rapidocr` downloads its two PP-OCRv5 models (text detection and Latin recognition,
+about 13 MB) once on the first OCR run; after that everything runs offline.
 
 ## Using the app
 
@@ -149,6 +156,17 @@ uv run python -m scan2form.spike.import_markup form.pdf shot*.png   # red-pen ma
 uv run python tools/make_icon.py                              # regenerate the app icon (PNGs + .ico)
 uv run python tools/make_screenshots.py                       # README screenshots (demo form, fake data)
 ```
+
+Windows package (PyInstaller, one folder with the OCR models; runs the packaged app's
+`--self-test` and zips it to `dist/`):
+
+```sh
+uv sync --group build
+uv run python tools/build_windows.py
+```
+
+Pushing a tag `v*` builds the same package on GitHub Actions and publishes it as a release with
+the matching [CHANGELOG](CHANGELOG.md) section. Contributions: see [CONTRIBUTING](CONTRIBUTING.md).
 
 Optional FFDNet comparison (local evaluation only, never shipped: Ultralytics is AGPL-3.0 and the
 CommonForms/FFDNet weights have no license yet):

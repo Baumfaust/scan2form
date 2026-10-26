@@ -33,6 +33,10 @@ def _set_windows_app_id() -> None:
 
 def main(argv: list[str] | None = None) -> int:
     argv = sys.argv if argv is None else argv
+    if len(argv) > 1 and argv[1] == "--self-test":
+        from scan2form import selftest
+
+        return selftest.run(Path(argv[2]) if len(argv) > 2 else None)
     _set_windows_app_id()
     app = QApplication(argv)
     app.setApplicationName("Scan2Form")
