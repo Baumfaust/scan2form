@@ -1,0 +1,78 @@
+[project]
+name = "scan2form"
+version = "0.1.0"
+description = "Offline desktop app: turn scanned paper forms into fillable PDFs and fill them from your own encrypted data"
+readme = "README.md"
+requires-python = ">=3.12,<3.14"
+license = "GPL-3.0-or-later"
+license-files = ["LICENSE"]
+authors = [{ name = "Baumfaust", email = "19357916+Baumfaust@users.noreply.github.com" }]
+keywords = ["fillable-pdf", "acroform", "pdf-forms", "ocr", "form-detection", "offline", "privacy"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Win32 (MS Windows)",
+    "Environment :: X11 Applications :: Qt",
+    "Intended Audience :: End Users/Desktop",
+    "Natural Language :: English",
+    "Natural Language :: German",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Office/Business",
+    "Topic :: Multimedia :: Graphics :: Capture :: Scanners",
+]
+# The shipped app must not depend on AGPL code (see the ffdnet-eval group below).
+dependencies = [
+    "cryptography>=44.0",
+    "keyring>=25.0",
+    "numpy>=2.0",
+    "platformdirs>=4.3",
+    "onnxruntime>=1.31.0",
+    "opencv-python-headless>=4.10",
+    "pillow>=11.0",
+    "pypdf>=5.0",
+    "pypdfium2>=4.30",
+    "pyside6-essentials>=6.8",
+    "rapidocr>=3.10.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/Baumfaust/scan2form"
+Issues = "https://github.com/Baumfaust/scan2form/issues"
+
+[project.scripts]
+scan2form = "scan2form.cli:main"
+scan2form-gui = "scan2form.ui.app:main"
+scan2form-spike = "scan2form.spike.compare_detectors:main"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3",
+    "pytest-qt>=4.5.0",
+    "reportlab>=4.2",
+    "ruff>=0.8",
+]
+# Local evaluation only, never shipped: ultralytics is AGPL-3.0 and the
+# FFDNet weights (CommonForms) have no license yet.
+ffdnet-eval = [
+    "huggingface-hub>=0.26",
+    "ultralytics>=8.3",
+]
+
+[tool.uv]
+# ultralytics pulls in opencv-python, which shares the cv2 package directory with
+# opencv-python-headless; installing/removing both corrupts cv2. Never install it.
+override-dependencies = ["opencv-python ; sys_platform == 'never'"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/scan2form"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"

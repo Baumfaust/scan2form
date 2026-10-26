@@ -1,0 +1,17 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+dist/
+build/
+spike-out/
+# Real-world forms may contain personal data; keep them local. NEVER commit or share.
+local_test/
+local_tests/
+tests/fixtures/private/
+# Local-only notes (not part of the project)
+claude.md
+CLAUDE.md
+.claude/
+docs/license-question-commonforms.md
