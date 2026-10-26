@@ -20,7 +20,7 @@ body:
       label: Steps to reproduce
       placeholder: |
         1. Open a scanned A4 form with …
-        2. Switch to ② Fill out
+        2. Switch to Fill out (Ctrl+2)
         3. …
   - type: input
     id: version
